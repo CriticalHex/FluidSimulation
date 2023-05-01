@@ -1,32 +1,17 @@
 #include"game.h"
 
 Game::Game() {
-	window.create(sf::VideoMode(1920, 1080), "Fluid", sf::Style::Fullscreen);
+	window.create(sf::VideoMode(windowSize.x, windowSize.y), "Fluid", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
+	image.create(windowSize.x, windowSize.y, bgColor);
+	texture.loadFromImage(image);
+	fluid.setTexture(texture);
 }
-
-
-void GameObject::draw(sf::RenderWindow& window) {
-	window.draw(rect);
-};
 
 void Game::initialize() {
-	gameObjects.push_back(std::make_unique<Pixel>());
+	//pixels.push_back(std::make_unique<Pixel>());
 };
-
-void Game::garbageCollect() {
-	std::vector<std::vector<std::unique_ptr<GameObject>>::iterator> toDelete;
-	for (std::vector<std::unique_ptr<GameObject>>::iterator iter = gameObjects.begin(); iter != gameObjects.end(); iter++) {
-		if ((*iter).get()->remove) {
-			(*iter).release();
-			toDelete.push_back(iter);
-		}
-	}
-	for (auto& iter : toDelete) {
-		gameObjects.erase(iter);
-	}
-}
 
 void Game::run() {
 
@@ -44,20 +29,18 @@ void Game::run() {
 			}
 		}
 		//UPDATE-------------------------------------------------------------
-		delta = clock.getElapsedTime();
+		dt = clock.getElapsedTime();
 		clock.restart();
-		for (std::unique_ptr<GameObject>& object : gameObjects) {
-			object.get()->update(gameObjects, delta.asMilliseconds());
+		for (auto& pixel : pixels) {
+			pixel->update(pixels, dt.asMilliseconds());
 		}
 
 		//RENDER--------------------------------------------------------------
 		window.clear(bgColor);
 
-		for (std::unique_ptr<GameObject>& object : gameObjects) {
-			object.get()->draw(window);
-		}
+		texture.loadFromImage(image);
+		window.draw(fluid);
 
 		window.display();
-		garbageCollect();
 	}
 }

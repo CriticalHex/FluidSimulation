@@ -1,7 +1,5 @@
 #pragma once
-#include<vector>
 #include"globals.h"
-#include"pixel.h"
 
 class Game
 {
@@ -10,11 +8,13 @@ public:
 	void run();
 private:
 	void initialize();
-	void garbageCollect();
-	std::vector<std::unique_ptr<Pixel>> gameObjects; // std::make_unique<GameObject>();
+	std::vector<Pixel*> pixels; // std::make_unique<Pixel>();
 	sf::RenderWindow window;
 	sf::Event gameEvent;
 	sf::Color bgColor = sf::Color(6, 8, 12);
 	sf::Clock clock;
-	sf::Time delta;
+	sf::Time dt;
+	sf::Image image;
+	sf::Texture texture;
+	sf::Sprite fluid;
 };
