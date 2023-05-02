@@ -1,16 +1,21 @@
+#include"globals.h"
 #include"game.h"
 
 Game::Game() {
 	window.create(sf::VideoMode(windowSize.x, windowSize.y), "Fluid", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
-	image.create(windowSize.x, windowSize.y, bgColor);
+	image.create(windowSize.x, windowSize.y, sf::Color::Red);
 	texture.loadFromImage(image);
 	fluid.setTexture(texture);
 }
 
 void Game::initialize() {
-	//pixels.push_back(std::make_unique<Pixel>());
+	for (int i = 0; i < windowSize.y; i++) {
+		for (int j = 0; j < windowSize.x; j++) {
+			pixels.push_back(new Pixel(sf::Vector2f(j, i)));
+		}
+	}
 };
 
 void Game::run() {
@@ -32,7 +37,7 @@ void Game::run() {
 		dt = clock.getElapsedTime();
 		clock.restart();
 		for (auto& pixel : pixels) {
-			pixel->update(pixels, dt.asMilliseconds());
+			pixel->update(pixels, dt.asMilliseconds(), image);
 		}
 
 		//RENDER--------------------------------------------------------------
