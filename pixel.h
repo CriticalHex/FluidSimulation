@@ -6,12 +6,17 @@ class Pixel {
 public:
 	Pixel(sf::Vector2f position);
 	~Pixel() {};
-	void update(std::vector< std::vector<Pixel*>>& pixels, float dt, sf::Image& image);
+	static int index(int x, int y);
+	void update(std::vector<Pixel*>& pixels, float dt, sf::Image& image);
+	void applyGravity(float dt);
+	void addDensity(float dens, float dt);
+	void diffuse(std::vector<Pixel*>& pixels, int b, float dt);
 	sf::Color color;
 	sf::Vector2f c_pos;
 	sf::Vector2f l_pos;
-	float s;
-	float density;
-	float diffusion;
-	float viscosity;
+	sf::Vector2f c_velocity;
+	sf::Vector2f l_velocity;
+	float density = 0;
+	float diffusion = 0;
+	float viscosity = 0.000001;
 };

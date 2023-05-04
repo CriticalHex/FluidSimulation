@@ -8,7 +8,7 @@ public:
 	void run();
 private:
 	void initialize();
-	std::vector< std::vector<Pixel*>> pixels;
+	std::vector<Pixel*> pixels;
 	sf::RenderWindow window;
 	sf::Event gameEvent;
 	sf::Color bgColor = sf::Color(6, 8, 12);
@@ -17,4 +17,5 @@ private:
 	sf::Image image;
 	sf::Texture texture;
 	sf::Sprite fluid;
+	sf::Vector2i mousePos;
 };
