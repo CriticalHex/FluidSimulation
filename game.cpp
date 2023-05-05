@@ -26,7 +26,7 @@ void Game::run() {
 	while (window.isOpen()) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			mousePos = sf::Mouse::getPosition();
-			std::cout << Pixel::index(mousePos.x, mousePos.y) << std::endl;
+			//std::cout << Pixel::index(mousePos.x, mousePos.y) << std::endl;
 			pixels[Pixel::index(mousePos.x, mousePos.y)]->addDensity(50, dt.asSeconds());
 		}
 		while (window.pollEvent(gameEvent))
