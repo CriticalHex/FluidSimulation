@@ -8,6 +8,12 @@ public:
 	void run();
 private:
 	void initialize();
+	void update();
+	void diffuseVelocity();
+	void boundVelocity();
+	void diffuseDensity();
+	void boundDensity();
+	void advectDensity();
 	std::vector<Pixel*> pixels;
 	sf::RenderWindow window;
 	sf::Event gameEvent;
@@ -18,4 +24,5 @@ private:
 	sf::Texture texture;
 	sf::Sprite fluid;
 	sf::Vector2i mousePos;
+	sf::Vector2i lastMousePos;
 };

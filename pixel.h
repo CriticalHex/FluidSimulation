@@ -7,17 +7,24 @@ public:
 	Pixel(sf::Vector2f position);
 	~Pixel() {};
 	static int index(int x, int y);
-	void update(std::vector<Pixel*>& pixels, float dt, sf::Image& image);
+	void update(sf::Image& image);
 	void applyGravity(float dt);
 	void addDensity(float dens, float dt);
-	void diffuse(std::vector<Pixel*>& pixels, int b, float dt);
+	void addVelocity(sf::Vector2f vel, float dt);
+
+	void diffuseDensity(std::vector<Pixel*>& pixels, float dt);
+	void advectDensity(std::vector<Pixel*>& pixels, float dt, float dx, float dy);
+	void boundDensity(std::vector<Pixel*>& pixels, int axis);
+
+	void diffuseVelocity(std::vector<Pixel*>& pixels, float dt);
+	void boundVelocity(std::vector<Pixel*>& pixels, int axis);
 
 	sf::Color color;
-	sf::Vector2f c_pos;
-	sf::Vector2f l_pos;
+	sf::Vector2f pos;
 	sf::Vector2f c_velocity;
 	sf::Vector2f l_velocity;
-	float density = 0;
+	float c_density = 0;
+	float l_density = 0;
 	float diffusion = 0;
 	float viscosity = 0.000001;
 };
