@@ -112,7 +112,7 @@ void Pixel::diffuseVelocity(std::vector<Pixel*>& pixels, float dt) {
 				pixels[index(pos.x, pos.y - 1)]->l_velocity)) * cReciprocal;
 }
 
-void Pixel::undivergeLastVelocity(std::vector<Pixel*>& pixels) {
+void Pixel::undivergeLastVelocity1(std::vector<Pixel*>& pixels) {
 	l_velocity =
 		(c_velocity +
 			a * (pixels[index(pos.x + 1, pos.y)]->l_velocity +
