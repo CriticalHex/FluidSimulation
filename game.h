@@ -10,9 +10,13 @@ private:
 	void initialize();
 	void update();
 	void diffuseVelocity();
-	void boundVelocity();
+	void boundLastVelocity();
+	void boundCurrentVelocity();
+	void advectVelocity();
+	void projectVelocity();
 	void diffuseDensity();
-	void boundDensity();
+	void boundLastDensity();
+	void boundCurrentDensity();
 	void advectDensity();
 	std::vector<Pixel*> pixels;
 	sf::RenderWindow window;

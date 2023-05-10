@@ -9,15 +9,20 @@ public:
 	static int index(int x, int y);
 	void update(sf::Image& image);
 	void applyGravity(float dt);
-	void addDensity(float dens, float dt);
-	void addVelocity(sf::Vector2f vel, float dt);
+	void addDensity(float dens);
+	void addVelocity(sf::Vector2f vel);
 
 	void diffuseDensity(std::vector<Pixel*>& pixels, float dt);
 	void advectDensity(std::vector<Pixel*>& pixels, float dt, float dx, float dy);
-	void boundDensity(std::vector<Pixel*>& pixels, int axis);
+	void boundLastDensity(std::vector<Pixel*>& pixels, int axis);
+	void boundCurrentDensity(std::vector<Pixel*>& pixels, int axis);
 
 	void diffuseVelocity(std::vector<Pixel*>& pixels, float dt);
-	void boundVelocity(std::vector<Pixel*>& pixels, int axis);
+	void advectVelocity(std::vector<Pixel*>& pixels, float dt, float dx, float dy);
+	void projectLastVelocity(std::vector<Pixel*>& pixels);
+	void projectCurrentVelocity(std::vector<Pixel*>& pixels);
+	void boundLastVelocity(std::vector<Pixel*>& pixels, int axis);
+	void boundCurrentVelocity(std::vector<Pixel*>& pixels, int axis);
 
 	sf::Color color;
 	sf::Vector2f pos;
