@@ -100,10 +100,58 @@ void Pixel::boundCurrentVelocity(std::vector<Pixel*>& pixels, int axis) {
 	}
 }
 
-void Pixel::diffuseVelocity(std::vector<Pixel*>& pixels, float dt) {
-	float a = dt * diffusion * (windowSize.x - 2) * (windowSize.y - 2);
-	float c = 1 + 6 * a; //a,c = 0,1 pretty sure
-	float cReciprocal = 1 / c; //would also be 1
+void Pixel::boundCopyLastVelocity(std::vector<Pixel*>& pixels, int axis) {
+	sf::Vector2f neighborVelocity;
+	int x, y;
+	x = pos.x;
+	y = pos.y;
+	switch (axis) {
+	case 0: //top
+		neighborVelocity = pixels[index(x, y + 1)]->l_velocity;
+		l_velocity = neighborVelocity;
+		break;
+	case 1: //right
+		neighborVelocity = pixels[index(x - 1, y)]->l_velocity;
+		l_velocity = neighborVelocity;
+		break;
+	case 2: //bottom
+		neighborVelocity = pixels[index(x, y - 1)]->l_velocity;
+		l_velocity = neighborVelocity;
+		break;
+	case 3: //left
+		neighborVelocity = pixels[index(x + 1, y)]->l_velocity;
+		l_velocity = neighborVelocity;
+		break;
+	}
+}
+
+void Pixel::boundCopyCurrentVelocity(std::vector<Pixel*>& pixels, int axis) {
+	sf::Vector2f neighborVelocity;
+	int x, y;
+	x = pos.x;
+	y = pos.y;
+	switch (axis) {
+	case 0: //top
+		neighborVelocity = pixels[index(x, y + 1)]->c_velocity;
+		c_velocity = sf::Vector2f(neighborVelocity.x, -neighborVelocity.y);
+		break;
+	case 1: //right
+		neighborVelocity = pixels[index(x - 1, y)]->c_velocity;
+		c_velocity = sf::Vector2f(-neighborVelocity.x, neighborVelocity.y);
+		break;
+	case 2: //bottom
+		neighborVelocity = pixels[index(x, y - 1)]->c_velocity;
+		c_velocity = sf::Vector2f(neighborVelocity.x, -neighborVelocity.y);
+		break;
+	case 3: //left
+		neighborVelocity = pixels[index(x + 1, y)]->c_velocity;
+		c_velocity = sf::Vector2f(-neighborVelocity.x, neighborVelocity.y);
+		break;
+	}
+}
+
+void Pixel::linearSolveVelocity(std::vector<Pixel*>& pixels, float a, float c) {
+	float cReciprocal = 1 / c;
 	l_velocity =
 		(c_velocity +
 			a * (pixels[index(pos.x + 1, pos.y)]->l_velocity +
@@ -112,16 +160,41 @@ void Pixel::diffuseVelocity(std::vector<Pixel*>& pixels, float dt) {
 				pixels[index(pos.x, pos.y - 1)]->l_velocity)) * cReciprocal;
 }
 
-void Pixel::undivergeLastVelocity1(std::vector<Pixel*>& pixels) {
-	l_velocity =
-		(c_velocity +
-			a * (pixels[index(pos.x + 1, pos.y)]->l_velocity +
-				pixels[index(pos.x - 1, pos.y)]->l_velocity +
-				pixels[index(pos.x, pos.y + 1)]->l_velocity +
-				pixels[index(pos.x, pos.y - 1)]->l_velocity)) * cReciprocal;
+void Pixel::dropCurrentXVelocity(std::vector<Pixel*>& pixels) {
+	c_velocity.y =
+		(-0.5 * (pixels[index(pos.x + 1, pos.y)]->l_velocity.x -
+				pixels[index(pos.x - 1, pos.y)]->l_velocity.x +
+				pixels[index(pos.x, pos.y + 1)]->l_velocity.y -
+				pixels[index(pos.x, pos.y - 1)]->l_velocity.y)) / windowSize.y;
+	c_velocity.x = 0;
 }
 
-void Pixel::advectVelocity(std::vector<Pixel*>& pixels, float dt, float dx, float dy) {
+void Pixel::dropLastXVelocity(std::vector<Pixel*>& pixels) {
+	l_velocity.y =
+		(-0.5 * (pixels[index(pos.x + 1, pos.y)]->c_velocity.x -
+			pixels[index(pos.x - 1, pos.y)]->c_velocity.x +
+			pixels[index(pos.x, pos.y + 1)]->c_velocity.y -
+			pixels[index(pos.x, pos.y - 1)]->c_velocity.y)) / windowSize.y;
+	l_velocity.x = 0;
+}
+
+void Pixel::lessenCurrentVelocity(std::vector<Pixel*>& pixels) {
+	c_velocity.x -= .5 * (pixels[index(pos.x + 1, pos.y)]->l_velocity.x -
+		pixels[index(pos.x - 1, pos.y)]->l_velocity.x) * windowSize.x;
+	c_velocity.y -=
+		(0.5 * (pixels[index(pos.x, pos.y + 1)]->l_velocity.x -
+			pixels[index(pos.x, pos.y - 1)]->l_velocity.x)) * windowSize.x; //TODO might be windowSize.y
+}
+
+void Pixel::lessenLastVelocity(std::vector<Pixel*>& pixels) {
+	l_velocity.x -= .5 * (pixels[index(pos.x + 1, pos.y)]->c_velocity.x -
+		pixels[index(pos.x - 1, pos.y)]->c_velocity.x ) * windowSize.x;
+	l_velocity.y -=
+		(0.5 * (pixels[index(pos.x, pos.y + 1)]->c_velocity.x -
+			pixels[index(pos.x, pos.y - 1)]->c_velocity.x)) * windowSize.x; //here too
+}
+
+void Pixel::advectVelocity(std::vector<Pixel*>& pixels, float dx, float dy) {
 	float dvx = dx * c_velocity.x;
 	float dvy = dy * c_velocity.y;
 	float x = pos.x - dvx;
@@ -195,7 +268,7 @@ void Pixel::diffuseDensity(std::vector<Pixel*>& pixels, float dt) {
 				pixels[index(pos.x, pos.y - 1)]->l_density)) * cReciprocal;
 }
 
-void Pixel::advectDensity(std::vector<Pixel*>& pixels, float dt, float dx, float dy) {
+void Pixel::advectDensity(std::vector<Pixel*>& pixels, float dx, float dy) {
 	float dvx = dx * c_velocity.x;
 	float dvy = dy * c_velocity.y;
 	float x = pos.x - dvx;

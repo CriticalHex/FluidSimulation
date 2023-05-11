@@ -20,17 +20,14 @@ void Game::initialize() {
 };
 
 void Game::boundLastVelocity() {
-	for (int y = 1; y < windowSize.y - 1; y++) { //left
-		pixels[Pixel::index(0, y)]->boundLastVelocity(pixels, 3);
+	for (int y = 1; y < windowSize.y - 1; y++) {
+		pixels[Pixel::index(0, y)]->boundLastVelocity(pixels, 3); //left
+		pixels[Pixel::index(windowSize.x - 1, y)]->boundLastVelocity(pixels, 1); //right
 	}
-	for (int y = 1; y < windowSize.y - 1; y++) { //right
-		pixels[Pixel::index(windowSize.x - 1, y)]->boundLastVelocity(pixels, 1);
-	}
-	for (int x = 1; x < windowSize.x - 1; x++) { //top
-		pixels[Pixel::index(x, 0)]->boundLastVelocity(pixels, 0);
-	}
-	for (int x = 1; x < windowSize.x - 1; x++) { //bottom
-		pixels[Pixel::index(x, windowSize.y - 1)]->boundLastVelocity(pixels, 2);
+
+	for (int x = 1; x < windowSize.x - 1; x++) {
+		pixels[Pixel::index(x, 0)]->boundLastVelocity(pixels, 0); //top
+		pixels[Pixel::index(x, windowSize.y - 1)]->boundLastVelocity(pixels, 2); //bottom
 	}
 
 	sf::Vector2f v1 = pixels[Pixel::index(1, 0)]->l_velocity;
@@ -51,17 +48,70 @@ void Game::boundLastVelocity() {
 }
 
 void Game::boundCurrentVelocity() {
-	for (int y = 1; y < windowSize.y - 1; y++) { //left
-		pixels[Pixel::index(0, y)]->boundCurrentVelocity(pixels, 3);
+	for (int y = 1; y < windowSize.y - 1; y++) {
+		pixels[Pixel::index(0, y)]->boundCurrentVelocity(pixels, 3); //left
+		pixels[Pixel::index(windowSize.x - 1, y)]->boundCurrentVelocity(pixels, 1); //right
 	}
-	for (int y = 1; y < windowSize.y - 1; y++) { //right
-		pixels[Pixel::index(windowSize.x - 1, y)]->boundCurrentVelocity(pixels, 1);
+
+	for (int x = 1; x < windowSize.x - 1; x++) {
+		pixels[Pixel::index(x, 0)]->boundCurrentVelocity(pixels, 0); //top
+		pixels[Pixel::index(x, windowSize.y - 1)]->boundCurrentVelocity(pixels, 2); //bottom
 	}
-	for (int x = 1; x < windowSize.x - 1; x++) { //top
-		pixels[Pixel::index(x, 0)]->boundCurrentVelocity(pixels, 0);
+
+	sf::Vector2f v1 = pixels[Pixel::index(1, 0)]->c_velocity;
+	sf::Vector2f v2 = pixels[Pixel::index(0, 1)]->c_velocity;
+	pixels[Pixel::index(0, 0)]->c_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(1, windowSize.y - 1)]->c_velocity;
+	v2 = pixels[Pixel::index(0, windowSize.y - 2)]->c_velocity;
+	pixels[Pixel::index(0, windowSize.y - 1)]->c_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(windowSize.x - 2, 0)]->c_velocity;
+	v2 = pixels[Pixel::index(windowSize.x - 1, 1)]->c_velocity;
+	pixels[Pixel::index(windowSize.x - 1, 0)]->c_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(windowSize.x - 2, windowSize.y - 1)]->c_velocity;
+	v2 = pixels[Pixel::index(windowSize.x - 1, windowSize.y - 2)]->c_velocity;
+	pixels[Pixel::index(windowSize.x - 1, windowSize.y - 1)]->c_velocity = .5f * (v1 + v2);
+}
+
+void Game::boundCopyLastVelocity() {
+	for (int y = 1; y < windowSize.y - 1; y++) {
+		pixels[Pixel::index(0, y)]->boundCopyLastVelocity(pixels, 3); //left
+		pixels[Pixel::index(windowSize.x - 1, y)]->boundCopyLastVelocity(pixels, 1); //right
 	}
-	for (int x = 1; x < windowSize.x - 1; x++) { //bottom
-		pixels[Pixel::index(x, windowSize.y - 1)]->boundCurrentVelocity(pixels, 2);
+
+	for (int x = 1; x < windowSize.x - 1; x++) { 
+		pixels[Pixel::index(x, 0)]->boundCopyLastVelocity(pixels, 0); //top
+		pixels[Pixel::index(x, windowSize.y - 1)]->boundCopyLastVelocity(pixels, 2); //bottom
+	}
+
+	sf::Vector2f v1 = pixels[Pixel::index(1, 0)]->l_velocity;
+	sf::Vector2f v2 = pixels[Pixel::index(0, 1)]->l_velocity;
+	pixels[Pixel::index(0, 0)]->l_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(1, windowSize.y - 1)]->l_velocity;
+	v2 = pixels[Pixel::index(0, windowSize.y - 2)]->l_velocity;
+	pixels[Pixel::index(0, windowSize.y - 1)]->l_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(windowSize.x - 2, 0)]->l_velocity;
+	v2 = pixels[Pixel::index(windowSize.x - 1, 1)]->l_velocity;
+	pixels[Pixel::index(windowSize.x - 1, 0)]->l_velocity = .5f * (v1 + v2);
+
+	v1 = pixels[Pixel::index(windowSize.x - 2, windowSize.y - 1)]->l_velocity;
+	v2 = pixels[Pixel::index(windowSize.x - 1, windowSize.y - 2)]->l_velocity;
+	pixels[Pixel::index(windowSize.x - 1, windowSize.y - 1)]->l_velocity = .5f * (v1 + v2);
+}
+
+void Game::boundCopyCurrentVelocity() {
+	for (int y = 1; y < windowSize.y - 1; y++) {
+		pixels[Pixel::index(0, y)]->boundCopyCurrentVelocity(pixels, 3); //left
+		pixels[Pixel::index(windowSize.x - 1, y)]->boundCopyCurrentVelocity(pixels, 1); //right
+	}
+
+	for (int x = 1; x < windowSize.x - 1; x++) {
+		pixels[Pixel::index(x, 0)]->boundCopyCurrentVelocity(pixels, 0); //top
+		pixels[Pixel::index(x, windowSize.y - 1)]->boundCopyCurrentVelocity(pixels, 2); //bottom
 	}
 
 	sf::Vector2f v1 = pixels[Pixel::index(1, 0)]->c_velocity;
@@ -82,10 +132,12 @@ void Game::boundCurrentVelocity() {
 }
 
 void Game::diffuseVelocity() {
+	float a;
 	for (int iteration = 0; iteration < solveIterations; iteration++) {
 		for (int y = 1; y < windowSize.y - 1; y++) {
 			for (int x = 1; x < windowSize.x - 1; x++) {
-				pixels[Pixel::index(x, y)]->diffuseVelocity(pixels, dt.asSeconds());
+				a = dt.asSeconds() * pixels[Pixel::index(x, y)]->diffusion * (windowSize.x - 2) * (windowSize.y - 2);
+				pixels[Pixel::index(x, y)]->linearSolveVelocity(pixels, a, 1 + 6 * a);
 			}
 		}
 		boundLastVelocity();
@@ -97,19 +149,20 @@ void Game::advectVelocity() {
 	float dy = dt.asSeconds() * (windowSize.y - 2);
 	for (int i = 1; i < windowSize.y - 1; i++) {
 		for (int j = 1; j < windowSize.x - 1; j++) {
-			pixels[Pixel::index(j, i)]->advectVelocity(pixels, dt.asSeconds(), dx, dy);
+			pixels[Pixel::index(j, i)]->advectVelocity(pixels, dx, dy);
 		}
 	}
 	boundCurrentVelocity();
 }
 
-void Game::projectVelocity() {
+void Game::projectLastVelocity() {
 	for (int i = 1; i < windowSize.y - 1; i++) {
 		for (int j = 1; j < windowSize.x - 1; j++) {
-			pixels[Pixel::index(j, i)]->projectVelocity(pixels, dt.asSeconds());
+			pixels[Pixel::index(j, i)]->dropLastXVelocity(pixels);
 		}
 	}
-	boundCurrentVelocity();
+	boundCopyCurrentVelocity();
+
 }
 
 void Game::diffuseDensity() {
@@ -128,7 +181,7 @@ void Game::advectDensity() {
 	float dy = dt.asSeconds() * (windowSize.y - 2);
 	for (int i = 1; i < windowSize.y - 1; i++) {
 		for (int j = 1; j < windowSize.x - 1; j++) {
-			pixels[Pixel::index(j, i)]->advectDensity(pixels, dt.asSeconds(), dx, dy);
+			pixels[Pixel::index(j, i)]->advectDensity(pixels, dx, dy);
 		}
 	}
 	boundCurrentDensity();

@@ -13,16 +13,20 @@ public:
 	void addVelocity(sf::Vector2f vel);
 
 	void diffuseDensity(std::vector<Pixel*>& pixels, float dt);
-	void advectDensity(std::vector<Pixel*>& pixels, float dt, float dx, float dy);
+	void advectDensity(std::vector<Pixel*>& pixels, float dx, float dy);
 	void boundLastDensity(std::vector<Pixel*>& pixels, int axis);
 	void boundCurrentDensity(std::vector<Pixel*>& pixels, int axis);
 
-	void diffuseVelocity(std::vector<Pixel*>& pixels, float dt);
-	void advectVelocity(std::vector<Pixel*>& pixels, float dt, float dx, float dy);
-	void projectLastVelocity(std::vector<Pixel*>& pixels);
-	void projectCurrentVelocity(std::vector<Pixel*>& pixels);
+	void linearSolveVelocity(std::vector<Pixel*>& pixels, float a, float c);
+	void advectVelocity(std::vector<Pixel*>& pixels, float dx, float dy);
+	void dropCurrentXVelocity(std::vector<Pixel*>& pixels);
+	void dropLastXVelocity(std::vector<Pixel*>& pixels);
+	void lessenLastVelocity(std::vector<Pixel*>& pixels);
+	void lessenCurrentVelocity(std::vector<Pixel*>& pixels);
 	void boundLastVelocity(std::vector<Pixel*>& pixels, int axis);
 	void boundCurrentVelocity(std::vector<Pixel*>& pixels, int axis);
+	void boundCopyLastVelocity(std::vector<Pixel*>& pixels, int axis);
+	void boundCopyCurrentVelocity(std::vector<Pixel*>& pixels, int axis);
 
 	sf::Color color;
 	sf::Vector2f pos;

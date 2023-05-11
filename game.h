@@ -12,8 +12,11 @@ private:
 	void diffuseVelocity();
 	void boundLastVelocity();
 	void boundCurrentVelocity();
+	void boundCopyLastVelocity();
+	void boundCopyCurrentVelocity();
 	void advectVelocity();
-	void projectVelocity();
+	void projectLastVelocity();
+	void projectCurrentVelocity();
 	void diffuseDensity();
 	void boundLastDensity();
 	void boundCurrentDensity();
